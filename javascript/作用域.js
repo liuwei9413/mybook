@@ -18,3 +18,14 @@ function a() {
 10 
 hello 
 */
+
+//作用域问题
+var name = 'word';
+(function() {
+    if (typeof name === 'undefined') {
+        var name = 'Jack';  //var声明提前 name在函数内为undefined
+        console.log(name)
+    } else {
+        console.log('hello' + name);
+    }
+})(); //执行结果为Jack
