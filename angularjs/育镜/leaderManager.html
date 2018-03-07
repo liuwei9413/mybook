@@ -1,0 +1,531 @@
+﻿﻿<div class="layout-side">
+    <!-- 动态引入 左侧页面-->
+    <div class="Sidenav">
+        
+        <a href="#/{{sideNav.urlName+'?ts='+timeChuo}}" ng-class="thisUrlName == sideNav.urlName? sideNav.className+' active': sideNav.className"  ng-repeat="sideNav in sideNavs track by $index" ng-bind="sideNav.title"></a>
+    </div>
+    <!-- 动态引入 左侧页面 End-->
+</div>
+<div class="layout-main" style="background:#fff;">
+    <div class="test-ready">
+        <div class="test-ready-head" ng-show="pageOne">
+            <a class="trd-goback" href="javascript:history.go(-1);">返回测评准备</a>
+        </div>
+        <div class="test-ready-con" ng-show="pageOne">
+            <div class="trc-btn-box">
+                <div class="trc-btn trc-btn-leader" ng-class="{'trc-btn-active': trcConIndex == 1}" ng-click="selectTab(1)">校长测评</div>
+                <div class="trc-btn trc-btn-teacher" ng-class="{'trc-btn-active': trcConIndex == 2}" ng-click="selectTab(2)">教师测评</div>
+                <div class="trc-btn trc-btn-student" ng-class="{'trc-btn-active': trcConIndex == 3}" ng-click="selectTab(3)">学生测评</div>
+                <div class="trc-btn trc-btn-manage"><a ng-href={{toEduSchoolUrl}} target="_blank" style="display:block; height: 45px;">管理用户</a></div>
+            </div>
+            <div class="trc-con" ng-show="trcConIndex == 1">
+                <div class="trc-first">
+                    <div class="trc-first-title">
+                        <span class="trc-ft-number">1</span>
+                        <span>&nbsp;第一步：  选择参与校长测评用户</span>
+                    </div>
+                    <div class="trc-first-con">
+                        点击此处<span class="trc-fc-span" ng-click="modalOpen('isShowModalTeacher', 'teacherList', 'teacherSelectedIds','checkedAllTeacher','leader')">选择参测校长用户</span>如未维护校长信息，请点击管理用户，维护校长信息！
+                    </div>
+                </div>
+                <div class="trc-second">
+                    <div class="trc-second-title">
+                        <span class="trc-st-number">2</span>
+                        <span>&nbsp;第二步：  参与校长测评用户列表</span>
+                        <a href="{{ServicePath}}yitaifront/teacher/export/teacherOrHeader?schoolId={{userPO.schoolId}}&isSchoolHeader=1&trialId={{trialIdForLeader}}" class="trc-st-download">下载校长测评账号</a>
+                    </div>
+                    <div class="trc-second-con">
+                        <div class="trc-sc-search">
+                            <input class="sc-search-text" type="text" ng-model="searchLeaderText" placeholder="姓名／手机号查询" ng-keypress="enterEventForLeader($event)" />
+                            <input class="sc-search-btn" type="button" value="查询" ng-click="searchLeader()" />
+                        </div>
+                        <div class="trc-sc-datatable">
+                            <table class="trc-sc-table">
+                                <thead>
+                                    <tr>
+                                        <th>校长姓名</th>
+                                        <th>性别</th>
+                                        <th>手机号</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="!isNoLeaderData" ng-repeat="item in leaders">
+                                        <td ng-bind="item.name"></td>
+                                        <td ng-bind="item.sex == '1' ? '男' : '女'"></td>
+                                        <td ng-bind="item.phone"></td>
+                                        <td class="operation"><span><a href="/yitaifront/pages/front/myCenter/person.html#/personInfo/leader/{{item.id}}">查看详情</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span ng-click="deleteLeaderPopup(item.id)">删除测评用户</span></td>
+                                    </tr>
+                                    <tr ng-if="isNoLeaderData"><td colspan="4">暂无校长信息！</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="trc-sc-pagination" ng-if="leadersLength > 0">
+                                <tm-pagination conf="paginationConfLeader"></tm-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="trc-con" ng-show="trcConIndex == 2">
+                <div class="trc-first">
+                    <div class="trc-first-title">
+                        <span class="trc-ft-number">1</span>
+                        <span>&nbsp;第一步：  选择参与教师测评用户</span>
+                    </div>
+                    <div class="trc-first-con">
+                        点击此处<span class="trc-fc-span" ng-click="modalOpen('isShowModalTeacher', 'teacherList', 'teacherSelectedIds','checkedAllTeacher','teacher')">选择参测教师用户</span>如未维护教师信息，请点击管理用户，维护教师信息！
+                    </div>
+                </div>
+                <div class="trc-second">
+                    <div class="trc-second-title">
+                        <span class="trc-st-number">2</span>
+                        <span>&nbsp;第二步：  参与教师测评用户列表</span>
+                        <a href="{{ServicePath}}yitaifront/teacher/export/teacherOrHeader?schoolId={{userPO.schoolId}}&isSchoolHeader=0&trialId={{trialIdForTeacher}}" class="trc-st-download">下载教师测评账号</a>
+                    </div>
+                    <div class="trc-second-con">
+                        <div class="trc-sc-search">
+                            <input class="sc-search-text" type="text" placeholder="姓名／手机号查询" ng-model="searchTeacherText" ng-keypress="enterEventForTeacher($event)" />
+                            <input class="sc-search-btn" type="button" value="查询" ng-click="searchByTeacher()" />
+                        </div>
+                        <div class="trc-sc-datatable">
+                            <table class="trc-sc-table">
+                                <thead>
+                                <tr>
+                                    <th>教师姓名</th>
+                                    <th>性别</th>
+                                    <th>手机号</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="!isNoTeacherData" ng-repeat="item in teachers">
+                                        <td ng-bind="item.name"></td>
+                                        <td ng-bind="item.sex == '1' ? '男' : '女'"></td>
+                                        <td ng-bind="item.phone"></td>
+                                        <td class="operation"><span><a href="/yitaifront/pages/front/myCenter/person.html#/personInfo/teacher/{{item.id}}">查看详情</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span ng-click="deleteTeacherPopup(item.id)">删除测评用户</span></td>
+                                    </tr>
+                                    <tr ng-if="isNoTeacherData"><td colspan="4">暂无教师信息！</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="trc-sc-pagination" ng-if="teachersLength > 0">
+                                <tm-pagination conf="paginationConfTeacher"></tm-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="trc-con" ng-show="trcConIndex == 3">
+                <div class="trc-first">
+                    <div class="trc-first-title">
+                        <span class="trc-ft-number">1</span>
+                        <span>&nbsp;第一步：  选择参与学生测评用户</span>
+                    </div>
+                    <div class="trc-first-con">
+                        点击此处<span class="trc-fc-span" ng-click="modalOpen('isShowModalClass', 'selectClasses','classListSelectedIds','checkAllClass','gradeClass')">选择参测学生用户</span>如未维护学生信息，请点击管理用户，维护学生信息！
+                    </div>
+                </div>
+                <div class="trc-second">
+                    <div class="trc-second-title">
+                        <span class="trc-st-number">2</span>
+                        <span>&nbsp;第二步：  参与学生测评用户列表</span>
+
+                        <!--<a href="{{ServicePath}}yitaifront/teacher/export/teacherOrHeader?schoolId=110200019&isSchoolHeader=1&trialId=1" class="trc-st-download">下载学生测评账号</a>-->
+                        <a href="javascript:;" ng-click="modalOpen('isShowModalDownload','downloadClasses','downloadListSelectedIds','checkAllDonload','download')" class="trc-st-download">下载学生测评账号</a>
+
+                    </div>
+                    <div class="trc-second-con">
+                        <div class="trc-sc-grade">
+                            <span class="trc-scg-span">年级：</span>
+                            <ul class="trc-scg-ul">
+                                <li class="trc-scg-item" ng-class="{selected: gradeIndex == $index}" ng-repeat="item in grades" ng-click="initClass($index, item.tId, item.name)"><span class="trc-scg-itemspan"></span><b class="trc-scg-itemb" ng-bind="item.name"></b></li>
+                            </ul>
+                        </div>
+                        <div class="trc-sc-datatable">
+                            <table class="trc-sc-table trc-sc-table2">
+                                <thead>
+                                    <tr>
+                                        <th>班级名称</th>
+                                        <th>人数</th>
+                                        <th>班主任</th>
+                                        <th>联系方式</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="!isNoClassData" ng-repeat="item in classes">
+                                        <td ng-bind="item.name"></td>
+                                        <td ng-bind="item.stuCount"></td>
+                                        <td ng-bind="item.teacherName"></td>
+                                        <td ng-bind="item.teacherPhone"></td>
+                                        <td class="operation"><span  ng-click="selectTab(4, item)">查看班级学生</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span ng-click="deleteClassPopup(item.index)">删除测评班级</span></td>
+                                    </tr>
+                                    <tr ng-if="isNoClassData"><td colspan="4">暂无班级信息！</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-ready-con test-ready-student" ng-show="!pageOne">
+            <div class="test-ready-head">
+                <a class="trd-goback" href="javascript:;" ng-click="goBackClass()"></a>
+            </div>
+            <div class="trc-sc-classinfo">
+                <span class="class-info" ng-bind="gradeName + '（' + classObj.name + '）:' + classObj.stuCount + '人'"></span>
+                <span class="class-info" ng-bind="'班主任：' + classObj.teacherName"></span>
+            </div>
+            <div class="trc-sc-search">
+                <input class="sc-search-text" type="text" ng-model="searchStudentText" placeholder="姓名／学籍号查询" />
+                <!--<input class="sc-search-btn" type="button" value="搜索" ng-click="filterStudent()" />-->
+                <input class="sc-add-student" style="margin-left: 20px;" type="button" value="补充测评用户" ng-click="modalOpen('isShowModalStudents','studentList','studentSelectedIds','checkedAllStudent','classUser')" />
+                <input class="sc-del-student" type="button" value="批量删除" ng-click="deleteStudentsPopup()" />
+            </div>
+            <div class="trc-sc-datatable">
+                <table class="trc-sc-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="checkbox" ng-model="allStudentsIsChecked" ng-change="checkAllList(allStudentsIsChecked,'students','studentsIds')"> 
+                                <span class="checkbox-inner"></span> 
+                            </label>
+                        </th>
+                        <th>学生姓名</th>
+                        <th>性别</th>
+                        <th>学籍号</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-if="!isNoStudentData" ng-repeat="item in students | filter: filterStudentFn">
+                        <td>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="checkbox" ng-model="item.checked" ng-change="selectOne(item,'students','studentsIds','allStudentsIsChecked')">
+                                <span class="checkbox-inner"></span>
+                            </label>
+                        </td>
+                        <td ng-bind="item.name"></td>
+                        <td ng-bind="item.sex == '1' ? '男' : '女'"></td>
+                        <td ng-bind="item.sid"></td>
+                        <td class="operation"><span><a href="/yitaifront/pages/front/myCenter/person.html#/personInfo/student/{{item.id}}">查看详情</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span ng-click="deleteStudentPopup(item.id)">删除测评用户</span></td>
+                    </tr>
+                    <tr ng-if="isNoStudentData"><td colspan="4">暂无学生信息！</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!--删除校长确认框-->
+        <div class="lm-popup-wrapper" ng-class="{'disblock':popupDeleteLeaderIsShow, 'disnone':!popupDeleteLeaderIsShow}">
+            <div class="lm-popup">
+                <div class="lm-popup-head">
+                    <p class="lm-popup-title">删除测评用户</p>
+                    <a class="lm-popup-closebtn" href="javascript:;" ng-click="popupDeleteLeaderIsShow=false"></a>
+                </div>
+                <div class="lm-popup-item lm-popup-item-delete">
+                    <span class="lm-popup-delete-text">删除当前测评用户，将连用户答题的记录一并删除，请确认是否删除？</span>
+                </div>
+                <div class="lm-popup-btns lm-popup-btns-delete">
+                    <a class="lm-popup-cancelbtn" href="javascript:;" ng-click="popupDeleteLeaderIsShow=false">取消</a>
+                    <a class="lm-popup-confirmbtn" href="javascript:;" ng-click="deleteLeader();">确定</a>
+                </div>
+            </div>
+        </div>
+        <!--删除教师确认框-->
+        <div class="lm-popup-wrapper" ng-class="{'disblock':popupDeleteTeacherIsShow, 'disnone':!popupDeleteTeacherIsShow}">
+            <div class="lm-popup">
+                <div class="lm-popup-head">
+                    <p class="lm-popup-title">删除测评用户</p>
+                    <a class="lm-popup-closebtn" href="javascript:;" ng-click="popupDeleteTeacherIsShow=false"></a>
+                </div>
+                <div class="lm-popup-item lm-popup-item-delete">
+                    <span class="lm-popup-delete-text">删除当前测评用户，将连用户答题的记录一并删除，请确认是否删除？</span>
+                </div>
+                <div class="lm-popup-btns lm-popup-btns-delete">
+                    <a class="lm-popup-cancelbtn" href="javascript:;" ng-click="popupDeleteTeacherIsShow=false">取消</a>
+                    <a class="lm-popup-confirmbtn" href="javascript:;" ng-click="deleteTeacher();">确定</a>
+                </div>
+            </div>
+        </div>
+        <!--删除班级确认框-->
+        <div class="lm-popup-wrapper" ng-class="{'disblock':popupDeleteClassIsShow, 'disnone':!popupDeleteClassIsShow}">
+            <div class="lm-popup">
+                <div class="lm-popup-head">
+                    <p class="lm-popup-title">删除测评用户</p>
+                    <a class="lm-popup-closebtn" href="javascript:;" ng-click="popupDeleteClassIsShow=false"></a>
+                </div>
+                <div class="lm-popup-item lm-popup-item-delete">
+                    <span class="lm-popup-delete-text">删除该班级将会把该班级下学生一并删除，是否确认删除当前班级？</span>
+                </div>
+                <div class="lm-popup-btns lm-popup-btns-delete">
+                    <a class="lm-popup-cancelbtn" href="javascript:;" ng-click="popupDeleteClassIsShow=false">取消</a>
+                    <a class="lm-popup-confirmbtn" href="javascript:;" ng-click="deleteClass();">确定</a>
+                </div>
+            </div>
+        </div>
+        <!--删除学生确认框-->
+        <div class="lm-popup-wrapper" ng-class="{'disblock':popupDeleteStudentIsShow, 'disnone':!popupDeleteStudentIsShow}">
+            <div class="lm-popup">
+                <div class="lm-popup-head">
+                    <p class="lm-popup-title">删除测评用户</p>
+                    <a class="lm-popup-closebtn" href="javascript:;" ng-click="popupDeleteStudentIsShow=false"></a>
+                </div>
+                <div class="lm-popup-item lm-popup-item-delete">
+                    <span class="lm-popup-delete-text">删除当前测评用户，将连用户答题的记录一并删除，请确认是否删除？</span>
+                </div>
+                <div class="lm-popup-btns lm-popup-btns-delete">
+                    <a class="lm-popup-cancelbtn" href="javascript:;" ng-click="popupDeleteStudentIsShow=false">取消</a>
+                    <a class="lm-popup-confirmbtn" href="javascript:;" ng-click="deleteStudent();">确定</a>
+                </div>
+            </div>
+        </div>
+        <!--批量删除学生确认框-->
+        <div class="lm-popup-wrapper" ng-class="{'disblock':popupDeleteStudentsIsShow, 'disnone':!popupDeleteStudentsIsShow}">
+            <div class="lm-popup">
+                <div class="lm-popup-head">
+                    <p class="lm-popup-title">删除测评用户</p>
+                    <a class="lm-popup-closebtn" href="javascript:;" ng-click="popupDeleteStudentsIsShow=false"></a>
+                </div>
+                <div class="lm-popup-item lm-popup-item-delete">
+                    <span class="lm-popup-delete-text">删除当前测评用户，将连用户答题的记录一并删除，请确认是否删除？</span>
+                </div>
+                <div class="lm-popup-btns lm-popup-btns-delete">
+                    <a class="lm-popup-cancelbtn" href="javascript:;" ng-click="popupDeleteStudentsIsShow=false">取消</a>
+                    <a class="lm-popup-confirmbtn" href="javascript:;" ng-click="deleteStudents();">确定</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增班级用户 -->
+        <div class="modal" ng-class="{'open': isShowModalStudents}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">新增班级测评用户</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalStudents')"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="table-section table-class">
+                        <div class="table-header">
+                            <p class="class-name" ng-bind="gradeName + '（' + classObj.name + '）'"></p>
+                            <p class="tip-info">注：列表显示未参与测评用户</p>
+                        </div>
+                        <div class="table-body">
+                            <table class="table-fixed">
+                                <thead>
+                                <tr>
+                                    <th width="18%">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox" ng-model="checkedAllStudent" ng-change="checkAllList(checkedAllStudent,'studentList','studentSelectedIds')"> <span class="checkbox-inner"></span> </label>
+                                    </th>
+                                    <th width="26%">学生姓名</th>
+                                    <th width="56%">学籍号</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-if="studentTatal == 0">
+                                    <td class="table-data-empty">
+                                        <p class="table-data-empty-text">暂无数据</p>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="item in studentList track by $index">
+                                    <td width="18%">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox" ng-model="item.checked" ng-change="selectOne(item,'studentList','studentSelectedIds','checkedAllStudent')">
+                                            <span class="checkbox-inner"></span>
+                                        </label>
+                                    </td>
+                                    <td width="26%"> {{item.name}} </td>
+                                    <td width="56%"> {{item.sid}} </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p class="table-total">共计：{{studentTatal}}人</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" ng-click="submitSupplementStudent('isShowModalStudents')" class="botton botton-info">添加</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增教师 -->
+        <div class="modal" ng-class="{'open': isShowModalTeacher}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">新增测评用户</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalTeacher')"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="table-section ">
+                        <div class="table-header">
+                            <p class="tip-info">注：列表显示未参与测评用户</p>
+                        </div>
+                        <div class="table-search">
+                            <input type="text" placeholder="姓名/手机号查询" ng-model="searchText" ng-change="searchChange();">
+                            <!--  ng-input="searchTeacher($value)" -->
+                            <!-- <a href="javascript:;" class="botton botton-info">搜索</a> -->
+                        </div>
+                        <div class="table-body">
+                            <table class="table-fixed">
+                                <thead>
+                                <tr>
+                                    <th width="18%">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox" ng-model="checkedAllTeacher" ng-change="checkAllList(checkedAllTeacher,'teacherList','teacherSelectedIds')">
+                                            <span class="checkbox-inner"></span>
+                                        </label>
+                                    </th>
+                                    <th width="26%">姓名</th>
+                                    <th width="56%">手机号</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-if="teacherTatal == 0">
+                                    <td class="table-data-empty">
+                                        <p class="table-data-empty-text">请检查系统是否已维护用户数据</p>
+                                    </td>
+                                </tr>
+                                <!-- <tr ng-repeat="item in teacherList | filter: searchTeacher track by $index"> -->
+                                <tr ng-repeat="item in teacherList">
+                                    <td width="18%">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox" ng-model="item.checked" ng-change="selectOne(item,'teacherList','teacherSelectedIds','checkedAllTeacher')">
+                                            <span class="checkbox-inner"></span>
+                                        </label>
+                                    </td>
+                                    <td width="26%"> {{item.name}} </td>
+                                    <td width="56%"> {{item.phone}} </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p class="table-total">共计：{{teacherList.length}}人</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"> <a href="javascript:;" class="botton botton-info" ng-click="submitSupplementTeacher()">添加</a> </div>
+            </div>
+        </div>
+        <!-- 删除测评用户未启动 -->
+        <div class="modal minor" ng-class="{'open': isShowModalStart}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">删除测评用户</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalStart')"></a>
+                </div>
+                <div class="modal-body">
+                    <p class="message">是否确认删除当前用户？</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="botton botton-info">取消</a>
+                    <a href="javascript:;" class="botton botton-danger">删除</a>
+                </div>
+            </div>
+        </div>
+        <!-- 删除测评用户已启动 -->
+        <div class="modal minor" ng-class="{'open': isShowModalStarted}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">删除测评用户</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalStarted')"></a>
+                </div>
+                <div class="modal-body">
+                    <p class="message">删除当前测评用户，将连用户答题的记录一并删除，请确认是否删除？</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="botton botton-info">取消</a>
+                    <a href="javascript:;" class="botton botton-danger">删除</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal" ng-class="{'open': isShowModalDownload}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">下载测评用户账号</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalDownload')"
+                    ></a>
+                </div>
+                <div class="modal-body">
+                    <div class="check-box-section">
+                        <div class="check-all">
+                            <label class="checkbox-item">
+                                <input type="checkbox"  class="checkbox" ng-model="checkAllDonload" ng-change="checkAllList(checkAllDonload,'downloadClasses','downloadListSelectedIds')">
+                                <span class="checkbox-inner"></span>
+                                <span class="checkbox-text">全选</span>
+                            </label>
+                        </div>
+                        <div class="check-group">
+                            <div class="table-data-empty" ng-if="downloadClassesList.length ==0">
+                                <p class="table-data-empty-text">
+                                    暂无数据
+                                </p>
+                            </div>
+                            <!-- ng-if="item.classVoList.length" -->
+                            <div class="check-lists" ng-repeat="item in downloadClassesList track by $index" ng-if="item.classVoList.length">
+                                <div class="check-lists-label">{{item.name}}：</div>
+                                <div class="check-lists-content">
+                                    <div class="check-list" ng-repeat="list in item.classVoList track by $index">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox"  ng-model="list.checked" ng-change="selectOne(list,'downloadClasses','downloadListSelectedIds','checkAllDonload')">
+                                            <span class="checkbox-inner"></span>
+                                            <span class="checkbox-text"> {{list.name}}({{list.stuCount}}) </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a ng-href="{{downloadHref}}" class="botton botton-info" ng-click="getDownloadClass('isShowModalDownload')">下载</a>
+                </div>
+            </div>
+        </div>
+        <!-- 选择测评班级 -->
+        <div class="modal" ng-class="{'open': isShowModalClass}">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title">选择测评班级</div>
+                    <a href="javascript:;" class="modal-close" ng-click="modalClose('isShowModalClass')"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="check-box-section">
+                        <p class="tip-info" ng-if="classListBoolean">注：列表显示未参与测评用户</p>
+                        <!-- <div class="check-all">
+                          <label class="checkbox-item">
+                            <input type="checkbox"  class="checkbox" ng-model="checkAllClass" ng-change="checkAllList(checkAllClass,'classes','classListSelectedIds')">
+                            <span class="checkbox-inner"></span>
+                            <span class="checkbox-text">全选</span>
+                          </label>
+                        </div> -->
+                        <div class="check-group">
+                            <div class="table-data-empty" ng-if="!classListBoolean">
+                                <p class="table-data-empty-text" style="width: 340px; padding: 10px 40px; text-align: center;">
+                                    当前界面显示未参测班级，请检查系统是否已经维护班级数据，如未维护请点击界面上方的“管理用户”，维护班级及学生信息。
+                                </p>
+                            </div>
+                            <!-- ng-if="item.classVoList.length" -->
+                            <div class="check-lists" ng-repeat="item in classList track by $index" ng-if="item.classVoList.length">
+                                <div class="check-lists-label">{{item.name}}：</div>
+                                <div class="check-lists-content">
+                                    <div class="check-list" ng-repeat="list in item.classVoList track by $index">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" class="checkbox"  ng-model="list.checked" ng-change="selectOne(list,'selectClasses','classListSelectedIds','checkAllClass')">
+                                            <span class="checkbox-inner"></span>
+                                            <span class="checkbox-text"> {{list.name}}({{list.stuCount}}) </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="botton botton-info" ng-click="submitSupplementClasses('isShowModalClass')" ng-if="classListBoolean">添加</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

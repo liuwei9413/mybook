@@ -7,3 +7,21 @@ var o = {
 };
 
 console.log(o.f()); // logs 37
+
+
+var name = 'a';
+var obj = {
+   name: 'b',
+   prop: {
+      name: 'c',
+      getName: function() {
+         return this.name;
+      }
+   }
+};
+ 
+console.log(obj.prop.getName());    
+ 
+var test = obj.prop.getName;
+ 
+console.log(test());    

@@ -29,3 +29,8 @@ var name = 'word';
         console.log('hello' + name);
     }
 })(); //执行结果为Jack
+
+(function() {
+   var a = b = 5;
+})();
+console.log(b); //5
